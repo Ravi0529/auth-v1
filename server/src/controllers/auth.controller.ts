@@ -71,3 +71,36 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
         res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error" });
     }
 }
+
+export const login = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { username, password } = req.body;
+
+        if(!username || !password) {
+            res.status(STATUS.BAD_REQUEST).json({ message: "All fields are required" });
+            return;
+        }
+
+        const user = await prisma.user.findUnique({
+            where: {
+                username
+            }
+        });
+
+        if(!user) {
+            res.status(STATUS.NOT_FOUND).json({ message: "User not found" });
+            return;
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if(!isPasswordValid) {
+            res.status(STATUS.UNAUTHORIZED).json({ message: "Invalid Password" });
+            return;
+        }
+
+        res.status(STATUS.OK).json({ message: "Login successful", user });
+    } catch (error) {
+        res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error" });
+    }
+}
