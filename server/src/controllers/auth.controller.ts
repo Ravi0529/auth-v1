@@ -33,6 +33,20 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
             return;
         }
 
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            res.status(STATUS.BAD_REQUEST).json({ message: "Invalid email format" });
+            return;
+        }
+        
+        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (!passwordRegex.test(password)) {
+            res.status(STATUS.BAD_REQUEST).json({
+                message: "Password must be at least 8 characters long, include at least one uppercase letter, one number, and one special character",
+            });
+            return;
+        }
+
         const existingUsername = await prisma.user.findUnique({
             where: {
                 username
