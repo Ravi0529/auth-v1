@@ -2,28 +2,9 @@ import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from "bcrypt";
 import { generateTokenAndSetCookie } from '../utils/generateToken.js';
+import { STATUS } from '../constants/status.js';
 
 const prisma = new PrismaClient();
-
-interface Requests {
-    OK: 200;
-    CREATED: 201;
-    BAD_REQUEST: 400;
-    UNAUTHORIZED: 401;
-    NOT_FOUND: 404;
-    DUPLICATE: 409;
-    INTERNAL_SERVER_ERROR: 500;
-}
-
-const STATUS: Requests = {
-    OK: 200,
-    CREATED: 201,
-    BAD_REQUEST: 400,
-    UNAUTHORIZED: 401,
-    NOT_FOUND: 404,
-    DUPLICATE: 409,
-    INTERNAL_SERVER_ERROR: 500,
-};
 
 export const signup = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -124,5 +105,14 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         res.status(STATUS.OK).json({ message: "Login successful", user });
     } catch (error) {
         res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error" });
+    }
+}
+
+export const logout = async (req: Request, res: Response): Promise<void> => {
+    try {
+        res.clearCookie("jwt");
+        res.status(STATUS.OK).json({ message: "Logout successful" });
+    } catch (error) {
+        res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error", error });
     }
 }
