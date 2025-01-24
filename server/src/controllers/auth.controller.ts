@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from "bcrypt";
+import { generateTokenAndSetCookie } from '../utils/generateToken.js';
 
 const prisma = new PrismaClient();
 
@@ -28,7 +29,7 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
     try {
         const { firstName, lastName, username, email, password } = req.body;
 
-        if(!firstName || !lastName || !username || !email || !password) {
+        if (!firstName || !lastName || !username || !email || !password) {
             res.status(STATUS.BAD_REQUEST).json({ message: "All fields are required" });
             return;
         }
@@ -38,7 +39,7 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
             res.status(STATUS.BAD_REQUEST).json({ message: "Invalid email format" });
             return;
         }
-        
+
         const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         if (!passwordRegex.test(password)) {
             res.status(STATUS.BAD_REQUEST).json({
@@ -53,7 +54,7 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
             }
         });
 
-        if(existingUsername) {
+        if (existingUsername) {
             res.status(STATUS.DUPLICATE).json({ message: "User already exists" });
             return;
         }
@@ -64,7 +65,7 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
             }
         });
 
-        if(existingEmail) {
+        if (existingEmail) {
             res.status(STATUS.DUPLICATE).json({ message: "User already exists" });
             return;
         }
@@ -80,7 +81,12 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
                 password: hashedPassword
             }
         })
-        res.status(STATUS.CREATED).json({ createUser });
+
+        if (createUser) {
+            generateTokenAndSetCookie(createUser.id, res);
+            res.status(STATUS.CREATED).json({ createUser });
+        }
+
     } catch (error) {
         res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error" });
     }
@@ -90,7 +96,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     try {
         const { username, password } = req.body;
 
-        if(!username || !password) {
+        if (!username || !password) {
             res.status(STATUS.BAD_REQUEST).json({ message: "All fields are required" });
             return;
         }
@@ -101,17 +107,19 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             }
         });
 
-        if(!user) {
+        if (!user) {
             res.status(STATUS.NOT_FOUND).json({ message: "User not found" });
             return;
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
-        if(!isPasswordValid) {
+        if (!isPasswordValid) {
             res.status(STATUS.UNAUTHORIZED).json({ message: "Invalid Password" });
             return;
         }
+
+        generateTokenAndSetCookie(user.id, res);
 
         res.status(STATUS.OK).json({ message: "Login successful", user });
     } catch (error) {
