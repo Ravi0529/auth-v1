@@ -116,3 +116,22 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
         res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error", error });
     }
 }
+
+export const getHome = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const user = await prisma.user.findUnique({
+            where: {
+                id: req.user?.id
+            }
+        });
+
+        if (!user) {
+            res.status(STATUS.NOT_FOUND).json({ message: "User not found" });
+            return;
+        }
+
+        res.status(STATUS.OK).json({ user });
+    } catch (error) {
+        res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error", error });
+    }
+}
