@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsc && cross-env NODE_ENV=development node server/dist/server.js",
-    "build": "tsc && npm install && prisma generate --schema=./server/prisma/schema.prisma && npm install --prefix client && npm run build --prefix client",
+    "build": "tsc && npm install && npx prisma generate && npm install --prefix client && npm run build --prefix client",
     "start": "cross-env NODE_ENV=production node server/dist/server.js"
   },
   "keywords": [],
