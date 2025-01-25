@@ -1,4 +1,3 @@
-import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
@@ -130,9 +129,6 @@ const SignUp: React.FC = () => {
                 required
               />
             </div>
-            <div className="text-xs text-indigo-500 mt-1 cursor-pointer underline absolute right-0">
-              Forget Password?
-            </div>
           </div>
 
           <button
@@ -144,7 +140,7 @@ const SignUp: React.FC = () => {
         </form>
 
         <div className="text-sm text-center text-gray-600 mt-4">
-          Already have an account? 
+          Already have an account?{" "}
           <button 
             onClick={handleNavigateToLogin} 
             className="text-indigo-500 hover:underline ml-1 cursor-pointer">
