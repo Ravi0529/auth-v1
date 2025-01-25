@@ -2,12 +2,43 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUser, FaLock } from "react-icons/fa";
 import { FiUserPlus } from "react-icons/fi";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const Login: React.FC = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         username: "",
         password: "",
+    });
+
+    const queryClient = useQueryClient();
+
+    const { mutate, isError, isPending, error } = useMutation({
+        mutationFn: async ({ username, password }: any) => {
+            try {
+                const response = await fetch("/api/auth/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ username, password }),
+                });
+
+                const data = await response.json();
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                if (!response.ok) {
+                    throw new Error(data.error || "Failed to login");
+                }
+                return data;
+            } catch (error) {
+                throw new Error(error as string);
+            }
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["authUser"] });
+        }
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -17,6 +48,7 @@ const Login: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        mutate(formData);
     };
 
     const handleNavigateToLogin = () => {
@@ -71,11 +103,13 @@ const Login: React.FC = () => {
                         </div>
                     </div>
 
+                    {isError && <p className='text-red-500 mt-2'>{error.message}</p>}
+
                     <button
                         type="submit"
                         className="w-full bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium py-2 rounded-md transition duration-300 cursor-pointer"
                     >
-                        Sign Up
+                        {isPending ? "Logging In..." : "Login"}
                     </button>
                 </form>
 
@@ -84,7 +118,7 @@ const Login: React.FC = () => {
                     <button
                         onClick={handleNavigateToLogin}
                         className="text-indigo-500 hover:underline ml-1 cursor-pointer">
-                        Login
+                        Sign Up
                     </button>
                 </div>
             </div>
