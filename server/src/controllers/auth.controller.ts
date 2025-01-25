@@ -122,6 +122,14 @@ export const getHome = async (req: Request, res: Response): Promise<void> => {
         const user = await prisma.user.findUnique({
             where: {
                 id: req.user?.id
+            },
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                username: true,
+                email: true,
+                password: false
             }
         });
 
