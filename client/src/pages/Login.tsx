@@ -16,7 +16,7 @@ const Login: React.FC = () => {
     const { mutate, isError, isPending, error } = useMutation({
         mutationFn: async ({ username, password }: any) => {
             try {
-                const response = await fetch("/api/auth/login", {
+                const response = await fetch("/v1/auth/login", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
