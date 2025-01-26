@@ -1,5 +1,5 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { STATUS } from "../constants/status";
+import { STATUS } from "../constants/status.js";
 import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
 

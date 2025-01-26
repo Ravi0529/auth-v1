@@ -2,6 +2,7 @@
   "name": "auth",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "tsc && cross-env NODE_ENV=development node server/dist/server.js",
     "build": "npm install && tsc && prisma generate --schema=./server/prisma/schema.prisma && npm install --prefix client && npm run build --prefix client",
