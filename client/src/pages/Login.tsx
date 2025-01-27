@@ -29,7 +29,7 @@ const Login: React.FC = () => {
                     throw new Error(data.error);
                 }
                 if (!response.ok) {
-                    throw new Error(data.error || "Failed to login");
+                    throw new Error(data.message || "Failed to login");
                 }
                 return data;
             } catch (error) {

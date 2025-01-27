@@ -32,7 +32,7 @@ const SignUp: React.FC = () => {
                     throw new Error(data.error);
                 }
                 if (!response.ok) {
-                    throw new Error(data.error || "Failed to create account");
+                    throw new Error(data.message || "Failed to create account");
                 }
                 return data;
             } catch (error) {

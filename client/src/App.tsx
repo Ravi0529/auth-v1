@@ -14,7 +14,7 @@ const App: React.FC = () => {
         const data = await response.json();
         if (data.error) return null;
         if (!response.ok) {
-          throw new Error(data.error || "Something went wrong");
+          throw new Error(data.message || "Something went wrong");
         }
         return data;
       } catch (error) {
