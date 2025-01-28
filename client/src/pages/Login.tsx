@@ -98,13 +98,16 @@ const Login: React.FC = () => {
                                 required
                             />
                         </div>
+                        <div className="text-xs text-indigo-500 mt-1 cursor-pointer underline absolute right-0">
+                            Forget Password?
+                        </div>
                     </div>
 
                     {isError && <p className='text-red-500 mt-2'>{error.message}</p>}
 
                     <button
                         type="submit"
-                        className="w-full bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium py-2 rounded-md transition duration-300 cursor-pointer"
+                        className="w-full mt-2 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium py-2 rounded-md transition duration-300 cursor-pointer"
                     >
                         {isPending ? "Logging In..." : "Login"}
                     </button>

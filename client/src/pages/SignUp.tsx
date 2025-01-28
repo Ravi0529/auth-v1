@@ -151,6 +151,9 @@ const SignUp: React.FC = () => {
                                 required
                             />
                         </div>
+                        <div className="text-xs text-indigo-500 mt-1 cursor-pointer underline absolute right-0">
+                            Verify Email
+                        </div>
                     </div>
 
                     <div className="mb-6 relative">
